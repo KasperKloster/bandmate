@@ -26,8 +26,9 @@ class SpatieCspExtended extends Basic
 
         $this->addDirective(Directive::IMG, 'https://s1.ticketm.net/');
         $this->addDirective(Directive::IMG, 'https://media.ticketmaster.eu/');
+        $this->addDirective(Directive::IMG, 'https://www.google-analytics.com/');
 
-        // $this->addDirective(Directive::STYLE, 'self unsafe-inline');
+        $this->addDirective(Directive::CONNECT, 'https://www.google-analytics.com/');
 
     }
 }

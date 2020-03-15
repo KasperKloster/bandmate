@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-  <div class="footer-copyright">
+  <div class="grey darken-4 footer-copyright">
     <div class="container">
     © {{ now()->year }}
     </div>

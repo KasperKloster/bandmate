@@ -52,6 +52,7 @@
     <div class="col s12 m4 l3">
       <ul class="collection with-header">
         <li class="collection-header"><h4>By</h4></li>
+          <a href="{{ route('concerts.index') }}" class="collection-item">Hele Landet <i class="material-icons float-right">keyboard_arrow_right</i></a>
           @foreach($citiesAndGenres['cities'] as $city)
           <a href="{{ route('concerts.index', $city) }}" class="collection-item">{{ $city }} <i class="material-icons float-right">keyboard_arrow_right</i></a>
           @endforeach
@@ -80,7 +81,7 @@
       <div class="row">
         <h1 class="d-inline">Koncerter i @isset($cityName) {{$cityName}} @else Hele Danmark @endisset</h1>
         @isset($cityName)
-        <h2>Live musik i {{$cityName}}</h2>
+        <h2>Live musik i {{$cityName}} i dag</h2>
         <p>Live koncerter du kan tage til i dag i {{$cityName}}</p>
         @endisset
       </div>
@@ -118,7 +119,11 @@
               </div>
             </div>
             <div class="card-action">
+              @if($events[$i]['dates']['status']['code'] != 'cancelled')
               <a href="{{ $events[$i]['url'] }}" target="_blank" rel="noopener" class="btn light-blue darken-1 waves-effect waves-light">Køb Billet</a>
+              @else
+              <a class="btn waves-effect waves-light red darken-2">Aflyst</a>
+              @endif
             </div>
           </div>
         </div>

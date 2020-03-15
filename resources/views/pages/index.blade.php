@@ -21,7 +21,7 @@
       <div class="row">
         <div class="col s8 offset-s2">
             <div class="input-field col s10">
-              <input id="frontSearch" type="text" class="white grey-text front-input" placeholder="Søg efter koncert">
+              <input id="frontSearch" type="text" class="white grey-text front-input" placeholder="Søg efter koncert, by, spillested...">
             </div>
             <div class="input-field col s2">
               <button class="btn btn-large light-blue darken-1 waves-effect waves-light" type="submit" name="action">Go!</button>
@@ -70,7 +70,11 @@
             </div>
             <div class="card-action d-inline-flex">
               <a href="{{ route('concert.single.get', $events[$i]['id']) }}" class="orange-text darken-3">Læs Mere</a>
+              @if($events[$i]['dates']['status']['code'] != 'cancelled')
               <a href="{{ $events[$i]['url'] }}" target="_blank" rel="noopener" class="btn btn-small light-blue darken-1 waves-effect waves-light">Køb Billet</a>
+              @else
+              <a class="btn waves-effect waves-light red darken-2">Aflyst</a>
+              @endif              
             </div>
             <div class="card-reveal">
               <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i>{{ $events[$i]['name'] }}</span>
@@ -110,11 +114,11 @@ const searchResults = async searchText => {
   const response = await fetch('/json/response');
   const results = await response.json();
 
-  // Only Name
-  let matches = results._embedded.events.filter(result => {
+  // Filter through array
+  let matches = results.filter(result => {
     // Regular expression, only match beginning from search text (case insensitive)
     const regex = new RegExp(`^${searchText}`, 'gi');
-    return result.name.match(regex);
+    return result.name.match(regex) || result.venue.match(regex) || result.city.match(regex);
   });
 
   // Don't return all, if users delete text
@@ -123,17 +127,12 @@ const searchResults = async searchText => {
     matches = [];
     matchList.innerHTML = '';
   }
-  // console.log(matches);
   outputHtml(matches);
 };
 
 const outputHtml = matches => {
   if(matches.length > 0){
-    // baseUrl = ;
-    // console.log();
-
     const html = matches
-
       .map(
         match => `
         <div class="card">
@@ -142,13 +141,9 @@ const outputHtml = matches => {
           </div>
         </div>
         `).join('');
-
     matchList.innerHTML = html;
   }
-
 }
-
 frontSearch.addEventListener('input', () => searchResults(frontSearch.value));
-
 </script>
 @stop

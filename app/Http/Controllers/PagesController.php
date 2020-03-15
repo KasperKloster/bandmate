@@ -10,18 +10,10 @@ class PagesController extends Controller
 {
   public function index()
   {
-    // TM Api
-    $response = Http::get('https://app.ticketmaster.com/discovery/v2/events', [
-      'apikey'             => env('TICKETMASTER_API'),
-      'locale'             => '*',
-      'startDateTime'      => date("Y-m-d") . 'T00:00:00Z',
-      'endDateTime'        => date("Y-m-d") . 'T23:59:00Z',
-      'countryCode'        => 'DK',
-      'classificationName' => 'music',
-    ])->json();
+    $response = $this->TmResponse();
     // Events
     $events = $response['_embedded']['events'];
-
+    // View
     return view('pages.index')->with('events', $events);
   }
 
@@ -37,15 +29,7 @@ class PagesController extends Controller
 
   public function getConcerts($city = NULL)
   {
-    $response = Http::get('https://app.ticketmaster.com/discovery/v2/events', [
-      'apikey'             => env('TICKETMASTER_API'),
-      'locale'             => '*',
-      'startDateTime'      => date("Y-m-d") . 'T00:00:00Z',
-      'endDateTime'        => date("Y-m-d") . 'T23:59:00Z',
-      'countryCode'        => 'DK',
-      'classificationName' => 'music',
-      'city'               => $city != NULL ? $city : '',
-    ])->json();
+    $response = $this->TmResponse($city);
 
     // If no events, redirect to concerts.index
     if(empty($response['_embedded']['events']) && $response->ok() == FALSE)
@@ -72,8 +56,14 @@ class PagesController extends Controller
   {
     $response = Http::get('https://app.ticketmaster.com//discovery/v2/events/' . $concert . '', [
       'apikey'  => env('TICKETMASTER_API'),
-      'locale'  => 'da-dk',
+      'locale'  => '*',
     ]);
+    // dd($response['_embedded']);
+    //
+    // echo '<pre>';
+    // var_dump($response['_embedded']);
+    //
+    // echo '</pre>';
 
     if($response->ok() == TRUE)
     {
@@ -88,27 +78,24 @@ class PagesController extends Controller
 
   public function responseJson()
   {
-    $response = Http::get('https://app.ticketmaster.com/discovery/v2/events', [
-      'apikey'             => env('TICKETMASTER_API'),
-      'locale'             => '*',
-      'startDateTime'      => date("Y-m-d") . 'T00:00:00Z',
-      'endDateTime'        => date("Y-m-d") . 'T23:59:00Z',
-      'countryCode'        => 'DK',
-      'classificationName' => 'music',
-    ]);
-    return $response;
+    $response = $this->TmResponse();
+    // Creating our array, with values we want to return
+    foreach($response['_embedded']['events'] as $events)
+    {
+      $return[] =
+      [
+          'id'    => $events['id'],
+          'name'  => $events['name'],
+          'venue' => $events['_embedded']['venues'][0]['name'],
+          'city'  => $events['_embedded']['venues'][0]['city']['name']
+      ];
+    }
+    return $return;
   }
 
   private function TmCitiesAndGenres()
   {
-    $response = Http::get('https://app.ticketmaster.com/discovery/v2/events', [
-      'apikey'             => env('TICKETMASTER_API'),
-      'locale'             => '*',
-      'startDateTime'      => date("Y-m-d") . 'T00:00:00Z',
-      'endDateTime'        => date("Y-m-d") . 'T23:59:00Z',
-      'countryCode'        => 'DK',
-      'classificationName' => 'music',
-    ])->json();
+    $response = $this->TmResponse();
 
     $allCities = [];
     $allGenres = [];
@@ -134,6 +121,21 @@ class PagesController extends Controller
     $genres = array_unique($allGenres, SORT_REGULAR);
 
     return ['cities' => $cities, 'genres' => $genres];
+  }
+
+  private function TmResponse($city = NULL)
+  {
+    $response = Http::get('https://app.ticketmaster.com/discovery/v2/events', [
+      'apikey'             => env('TICKETMASTER_API'),
+      'locale'             => '*',
+      'startDateTime'      => date("Y-m-d") . 'T00:00:00Z',
+      'endDateTime'        => date("Y-m-d") . 'T23:59:00Z',
+      'countryCode'        => 'DK',
+      'classificationName' => 'music',
+      'city'               => $city != NULL ? $city : '',
+    ])->json();
+
+    return $response;
   }
 
 
