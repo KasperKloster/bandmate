@@ -21,7 +21,7 @@
       <div class="row">
         <div class="col s8 offset-s2">
             <div class="input-field col s10">
-              <input id="frontSearch" type="text" class="white grey-text front-input" placeholder="Søg efter koncert, by, spillested...">
+              <input id="frontSearch" type="text" class="white grey-text front-input" placeholder="Søg efter Koncert, By, Spillested...">
             </div>
             <div class="input-field col s2">
               <button class="btn btn-large light-blue darken-1 waves-effect waves-light" type="submit" name="action">Go!</button>
@@ -74,7 +74,7 @@
               <a href="{{ $events[$i]['url'] }}" target="_blank" rel="noopener" class="btn btn-small light-blue darken-1 waves-effect waves-light">Køb Billet</a>
               @else
               <a class="btn waves-effect waves-light red darken-2">Aflyst</a>
-              @endif              
+              @endif
             </div>
             <div class="card-reveal">
               <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i>{{ $events[$i]['name'] }}</span>
@@ -135,9 +135,18 @@ const outputHtml = matches => {
     const html = matches
       .map(
         match => `
-        <div class="card">
-          <div class="card-content">
-           <span class="card-title"><a href="${'/koncert/' + match.id}">${match.name}. </a></span>
+        <div class="card horizontal">
+          <div class="card-image">
+            <img src="${match.image}" alt="${match.name}" />
+          </div>
+          <div class="card-stacked">
+            <div class="card-content">
+             <span class="card-title"><a href="${'/koncert/' + match.id}">${match.name}. </a></span>
+             <p>${match.venue} <br/> ${match.city}</p>
+            </div>
+            <div class="card-action">
+              <a class="float-right" href="${'/koncert/' + match.id}">Læs Mere</a></span>
+            </div>
           </div>
         </div>
         `).join('');

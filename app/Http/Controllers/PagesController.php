@@ -58,12 +58,6 @@ class PagesController extends Controller
       'apikey'  => env('TICKETMASTER_API'),
       'locale'  => '*',
     ]);
-    // dd($response['_embedded']);
-    //
-    // echo '<pre>';
-    // var_dump($response['_embedded']);
-    //
-    // echo '</pre>';
 
     if($response->ok() == TRUE)
     {
@@ -81,13 +75,14 @@ class PagesController extends Controller
     $response = $this->TmResponse();
     // Creating our array, with values we want to return
     foreach($response['_embedded']['events'] as $events)
-    {
+    {      
       $return[] =
       [
           'id'    => $events['id'],
           'name'  => $events['name'],
           'venue' => $events['_embedded']['venues'][0]['name'],
-          'city'  => $events['_embedded']['venues'][0]['city']['name']
+          'city'  => $events['_embedded']['venues'][0]['city']['name'],
+          'image' => $events['images'][0]['url']
       ];
     }
     return $return;
