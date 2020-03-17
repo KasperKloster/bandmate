@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 class PagesController extends Controller
 {
   public function index()
-  {
+  {    
     $response = $this->TmResponse();
     // Events
     $events = $response['_embedded']['events'];
@@ -75,7 +75,7 @@ class PagesController extends Controller
     $response = $this->TmResponse();
     // Creating our array, with values we want to return
     foreach($response['_embedded']['events'] as $events)
-    {      
+    {
       $return[] =
       [
           'id'    => $events['id'],
