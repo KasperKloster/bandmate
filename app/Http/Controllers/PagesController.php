@@ -12,7 +12,7 @@ class PagesController extends Controller
   {    
     $response = $this->TmResponse();
     // Events
-    $events = $response['_embedded']['events'];
+    $events = $response['_embedded']['events'];    
     // View
     return view('pages.index')->with('events', $events);
   }
