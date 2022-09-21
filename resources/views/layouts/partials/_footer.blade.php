@@ -26,6 +26,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
 <script src="{{ mix('js/main.js') }}"></script>
 @yield('scripts')
-@include('cookieConsent::index')
 </body>
 </html>
